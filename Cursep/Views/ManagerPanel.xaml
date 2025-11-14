@@ -17,16 +17,16 @@
                             <Button x:Name="btnAddMaterial" Content="Добавить материал" 
                                     Height="35" Padding="10,0" Margin="0,0,10,0"
                                     Background="#27ae60" Foreground="White" Click="BtnAddMaterial_Click"/>
-                            <Button x:Name="btnAddMaterial_Копировать" Content="Редактировать" 
-                                Height="35" Padding="10,0"
-                                Background="#3498db" Foreground="White" Click="BtnAddMaterial_Click"/>
-                            <Button x:Name="btnAddMaterial_Копировать1" Content="Удалить" 
-                                Height="35" Padding="10,0"
-                                Background="#e74c3c" Foreground="White" Click="BtnAddMaterial_Click"/>
+                            <Button x:Name="btnEditMaterial" Content="Редактировать" 
+                                    Height="35" Padding="10,0" Margin="0,0,10,0"
+                                    Background="#3498db" Foreground="White" Click="BtnEditMaterial_Click"/>
+                            <Button x:Name="btnDeleteMaterial" Content="Удалить" 
+                                    Height="35" Padding="10,0"
+                                    Background="#e74c3c" Foreground="White" Click="BtnDeleteMaterial_Click"/>
                         </StackPanel>
 
                         <!-- Список материалов -->
-                        <DataGrid x:Name="dgMaterials" AutoGenerateColumns="False" Height="400">
+                        <DataGrid x:Name="dgMaterials" AutoGenerateColumns="False" Height="400" SelectionMode="Single">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID" Binding="{Binding MaterialID}" Width="50"/>
                                 <DataGridTextColumn Header="Название" Binding="{Binding MaterialName}" Width="200"/>
@@ -53,15 +53,15 @@
                             <Button x:Name="btnAddSupplier" Content="Добавить поставщика" 
                                     Height="35" Padding="10,0" Margin="0,0,10,0"
                                     Background="#27ae60" Foreground="White" Click="BtnAddSupplier_Click"/>
-                            <Button x:Name="btnAddSupplier_Копировать" Content="Редактировать" 
-                                Height="35" Padding="10,0"
-                                Background="#3498db" Foreground="White" Click="BtnAddSupplier_Click"/>
-                            <Button x:Name="btnAddSupplier_Копировать1" Content="Удалить" 
-                                Height="35" Padding="10,0"
-                                Background="#e74c3c" Foreground="White" Click="BtnAddSupplier_Click"/>
+                            <Button x:Name="btnEditSupplier" Content="Редактировать" 
+                                    Height="35" Padding="10,0" Margin="0,0,10,0"
+                                    Background="#3498db" Foreground="White" Click="BtnEditSupplier_Click"/>
+                            <Button x:Name="btnDeleteSupplier" Content="Удалить" 
+                                    Height="35" Padding="10,0"
+                                    Background="#e74c3c" Foreground="White" Click="BtnDeleteSupplier_Click"/>
                         </StackPanel>
 
-                        <DataGrid x:Name="dgSuppliers" AutoGenerateColumns="False" Height="400">
+                        <DataGrid x:Name="dgSuppliers" AutoGenerateColumns="False" Height="400" SelectionMode="Single">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID" Binding="{Binding SupplierID}" Width="50"/>
                                 <DataGridTextColumn Header="Название" Binding="{Binding SupplierName}" Width="200"/>
@@ -91,7 +91,7 @@
                                 <TextBlock Text="по:" VerticalAlignment="Center" Margin="0,0,5,0"/>
                                 <DatePicker x:Name="dpEndDate" Width="120" Margin="0,0,15,0"/>
 
-                                <Button x:Name="btnGenerateReport" Content="Сформировать отчет всех товаров" 
+                                <Button x:Name="btnGenerateReport" Content="Сформировать отчет" 
                                         Height="35" Padding="10,0" Background="#3498db" 
                                         Foreground="White" Click="BtnGenerateReport_Click"/>
                             </StackPanel>
