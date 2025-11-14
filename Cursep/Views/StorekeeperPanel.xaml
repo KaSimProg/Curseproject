@@ -1,0 +1,114 @@
+﻿<UserControl x:Class="Cursep.Views.StorekeeperPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="Auto" Width="Auto">
+
+    <Grid>
+        <TabControl>
+            <!-- Вкладка Приход материалов -->
+            <TabItem Header="Приход материалов">
+                <ScrollViewer>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Прием материалов на склад" 
+                                  FontSize="16" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Левая часть - форма приема -->
+                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                <TextBlock Text="Выберите материал:" Margin="0,0,0,5"/>
+                                <ComboBox x:Name="cmbMaterials" Height="30" DisplayMemberPath="MaterialName"/>
+
+                                <TextBlock Text="Количество:" Margin="0,10,0,5"/>
+                                <TextBox x:Name="txtQuantity" Height="30"/>
+
+                                <TextBlock Text="Номер накладной:" Margin="0,10,0,5"/>
+                                <TextBox x:Name="txtReferenceNumber" Height="30"/>
+
+                                <TextBlock Text="Примечание:" Margin="0,10,0,5"/>
+                                <TextBox x:Name="txtNotes" Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
+
+                                <Button x:Name="btnIncome" Content="Оформить приход" 
+                                        Height="40" Background="#27ae60" Foreground="White" 
+                                        FontWeight="Bold" Margin="0,20,0,0" Click="BtnIncome_Click"/>
+                            </StackPanel>
+
+                            <!-- Правая часть - информация о материале -->
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                <TextBlock x:Name="txtMaterialInfo" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Вкладка Расход материалов -->
+            <TabItem Header="Расход материалов">
+                <ScrollViewer>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Отпуск материалов со склада" 
+                                  FontSize="16" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                <TextBlock Text="Выберите материал:" Margin="0,0,0,5"/>
+                                <ComboBox x:Name="cmbMaterialsOutcome" Height="30" DisplayMemberPath="MaterialName"/>
+
+                                <TextBlock Text="Количество:" Margin="0,10,0,5"/>
+                                <TextBox x:Name="txtQuantityOutcome" Height="30"/>
+
+                                <TextBlock Text="Номер документа:" Margin="0,10,0,5"/>
+                                <TextBox x:Name="txtReferenceOutcome" Height="30"/>
+
+                                <TextBlock Text="Примечание:" Margin="0,10,0,5"/>
+                                <TextBox x:Name="txtNotesOutcome" Height="60" TextWrapping="Wrap"/>
+
+                                <Button x:Name="btnOutcome" Content="Оформить расход" 
+                                        Height="40" Background="#e74c3c" Foreground="White" 
+                                        FontWeight="Bold" Margin="0,20,0,0" Click="BtnOutcome_Click"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                <TextBlock Text="Остатки на складе:" FontWeight="Bold" Margin="0,0,0,10"/>
+                                <DataGrid x:Name="dgStock" AutoGenerateColumns="False" Height="300">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Материал" Binding="{Binding MaterialName}" Width="*"/>
+                                        <DataGridTextColumn Header="Количество" Binding="{Binding Quantity}" Width="100"/>
+                                        <DataGridTextColumn Header="Место" Binding="{Binding Location}" Width="100"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Вкладка Остатки -->
+            <TabItem Header="Текущие остатки">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Текущие остатки материалов на складе" 
+                              FontSize="16" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                    <DataGrid x:Name="dgAllStock" AutoGenerateColumns="False" Height="400">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Материал" Binding="{Binding MaterialName}" Width="*"/>
+                            <DataGridTextColumn Header="Категория" Binding="{Binding CategoryName}" Width="150"/>
+                            <DataGridTextColumn Header="Количество" Binding="{Binding Quantity}" Width="100"/>
+                            <DataGridTextColumn Header="Ед.изм" Binding="{Binding UnitOfMeasure}" Width="80"/>
+                            <DataGridTextColumn Header="Место" Binding="{Binding Location}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

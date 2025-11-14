@@ -1,0 +1,76 @@
+﻿<Window x:Class="Cursep.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Вход в систему - Склад стройматериалов" 
+        Height="382" Width="390"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+
+    <Grid Background="#2c3e50">
+        <!-- Основной контейнер -->
+        <Border Background="White" 
+                Margin="20" 
+                BorderBrush="#bdc3c7" 
+                BorderThickness="1"
+                VerticalAlignment="Center">
+
+            <StackPanel Margin="20" VerticalAlignment="Center">
+
+                <!-- Заголовок -->
+                <TextBlock Text="Склад стройматериалов" 
+                          FontSize="18" 
+                          FontWeight="Bold" 
+                          HorizontalAlignment="Center" 
+                          Margin="0,0,0,20"
+                          Foreground="#2c3e50"/>
+
+                <!-- Поле логина -->
+                <TextBlock Text="Логин" 
+                          FontWeight="SemiBold"
+                          Foreground="#34495e"
+                          Margin="0,0,0,5"/>
+                <TextBox x:Name="txtUsername" 
+                        Height="30" 
+                        FontSize="14"
+                        BorderBrush="#bdc3c7"
+                        BorderThickness="1"
+                        Background="#f8f9fa"/>
+
+                <!-- Поле пароля -->
+                <TextBlock Text="Пароль" 
+                          FontWeight="SemiBold"
+                          Foreground="#34495e"
+                          Margin="0,15,0,5"/>
+                <PasswordBox x:Name="txtPassword" 
+                            Height="30" 
+                            FontSize="14"
+                            BorderBrush="#bdc3c7"
+                            BorderThickness="1"
+                            Background="#f8f9fa"/>
+
+                <!-- Кнопка входа -->
+                <Button x:Name="btnLogin" 
+                        Content="Войти" 
+                        Height="35" 
+                        Background="#3498db" 
+                        Foreground="White" 
+                        FontSize="14" 
+                        FontWeight="Bold" 
+                        Margin="0,25,0,0"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Click="BtnLogin_Click"/>
+
+                <!-- Сообщение об ошибке -->
+                <TextBlock x:Name="txtError" 
+                          Foreground="#e74c3c" 
+                          TextWrapping="Wrap" 
+                          Margin="0,15,0,0"
+                          FontSize="12"
+                          HorizontalAlignment="Center"
+                          Visibility="Collapsed"/>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

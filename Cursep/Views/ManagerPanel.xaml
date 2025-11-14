@@ -1,0 +1,142 @@
+﻿<UserControl x:Class="Cursep.Views.ManagerPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="Auto" Width="Auto">
+
+    <Grid>
+        <TabControl>
+            <!-- Вкладка Материалы -->
+            <TabItem Header="Управление материалами">
+                <ScrollViewer>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Управление материалами" 
+                                  FontSize="16" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                        <!-- Панель управления -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <Button x:Name="btnAddMaterial" Content="Добавить материал" 
+                                    Height="35" Padding="10,0" Margin="0,0,10,0"
+                                    Background="#27ae60" Foreground="White" Click="BtnAddMaterial_Click"/>
+                            <Button x:Name="btnAddMaterial_Копировать" Content="Редактировать" 
+                                Height="35" Padding="10,0"
+                                Background="#3498db" Foreground="White" Click="BtnAddMaterial_Click"/>
+                            <Button x:Name="btnAddMaterial_Копировать1" Content="Удалить" 
+                                Height="35" Padding="10,0"
+                                Background="#e74c3c" Foreground="White" Click="BtnAddMaterial_Click"/>
+                        </StackPanel>
+
+                        <!-- Список материалов -->
+                        <DataGrid x:Name="dgMaterials" AutoGenerateColumns="False" Height="400">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding MaterialID}" Width="50"/>
+                                <DataGridTextColumn Header="Название" Binding="{Binding MaterialName}" Width="200"/>
+                                <DataGridTextColumn Header="Категория" Binding="{Binding CategoryName}" Width="120"/>
+                                <DataGridTextColumn Header="Поставщик" Binding="{Binding SupplierName}" Width="150"/>
+                                <DataGridTextColumn Header="Цена" Binding="{Binding UnitPrice, StringFormat={}{0:C}}" Width="80"/>
+                                <DataGridTextColumn Header="Ед.изм" Binding="{Binding UnitOfMeasure}" Width="70"/>
+                                <DataGridTextColumn Header="Мин.запас" Binding="{Binding MinStockLevel}" Width="80"/>
+                                <DataGridTextColumn Header="Макс.запас" Binding="{Binding MaxStockLevel}" Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Вкладка Поставщики -->
+            <TabItem Header="Поставщики">
+                <ScrollViewer>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Управление поставщиками" 
+                                  FontSize="16" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <Button x:Name="btnAddSupplier" Content="Добавить поставщика" 
+                                    Height="35" Padding="10,0" Margin="0,0,10,0"
+                                    Background="#27ae60" Foreground="White" Click="BtnAddSupplier_Click"/>
+                            <Button x:Name="btnAddSupplier_Копировать" Content="Редактировать" 
+                                Height="35" Padding="10,0"
+                                Background="#3498db" Foreground="White" Click="BtnAddSupplier_Click"/>
+                            <Button x:Name="btnAddSupplier_Копировать1" Content="Удалить" 
+                                Height="35" Padding="10,0"
+                                Background="#e74c3c" Foreground="White" Click="BtnAddSupplier_Click"/>
+                        </StackPanel>
+
+                        <DataGrid x:Name="dgSuppliers" AutoGenerateColumns="False" Height="400">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding SupplierID}" Width="50"/>
+                                <DataGridTextColumn Header="Название" Binding="{Binding SupplierName}" Width="200"/>
+                                <DataGridTextColumn Header="Контактное лицо" Binding="{Binding ContactPerson}" Width="150"/>
+                                <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="120"/>
+                                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="150"/>
+                                <DataGridTextColumn Header="Адрес" Binding="{Binding Address}" Width="200"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Вкладка Отчеты -->
+            <TabItem Header="Отчеты">
+                <ScrollViewer>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Отчеты и аналитика" 
+                                  FontSize="16" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                        <!-- Фильтры отчетов -->
+                        <GroupBox Header="Параметры отчета" Margin="0,0,0,10">
+                            <StackPanel Orientation="Horizontal" Margin="10">
+                                <TextBlock Text="Период с:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <DatePicker x:Name="dpStartDate" Width="120" Margin="0,0,15,0"/>
+
+                                <TextBlock Text="по:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <DatePicker x:Name="dpEndDate" Width="120" Margin="0,0,15,0"/>
+
+                                <Button x:Name="btnGenerateReport" Content="Сформировать отчет всех товаров" 
+                                        Height="35" Padding="10,0" Background="#3498db" 
+                                        Foreground="White" Click="BtnGenerateReport_Click"/>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <!-- Статистика -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <Border Background="#f8f9fa" BorderBrush="#ddd" BorderThickness="1" 
+                                    Padding="15" Margin="0,0,10,0">
+                                <StackPanel>
+                                    <TextBlock Text="Всего материалов" FontSize="12" Foreground="#666"/>
+                                    <TextBlock x:Name="txtTotalMaterials" FontSize="18" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#f8f9fa" BorderBrush="#ddd" BorderThickness="1" 
+                                    Padding="15" Margin="0,0,10,0">
+                                <StackPanel>
+                                    <TextBlock Text="Всего операций" FontSize="12" Foreground="#666"/>
+                                    <TextBlock x:Name="txtTotalOperations" FontSize="18" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#f8f9fa" BorderBrush="#ddd" BorderThickness="1" 
+                                    Padding="15">
+                                <StackPanel>
+                                    <TextBlock Text="Общая стоимость" FontSize="12" Foreground="#666"/>
+                                    <TextBlock x:Name="txtTotalValue" FontSize="18" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Детали отчета -->
+                        <DataGrid x:Name="dgReport" AutoGenerateColumns="False" Height="300">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Материал" Binding="{Binding MaterialName}" Width="200"/>
+                                <DataGridTextColumn Header="Приход" Binding="{Binding Income}" Width="80"/>
+                                <DataGridTextColumn Header="Расход" Binding="{Binding Outcome}" Width="80"/>
+                                <DataGridTextColumn Header="Остаток" Binding="{Binding Balance}" Width="80"/>
+                                <DataGridTextColumn Header="Общая стоимость" Binding="{Binding TotalValue, StringFormat={}{0:C}}" Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>
