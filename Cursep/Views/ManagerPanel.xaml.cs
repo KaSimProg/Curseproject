@@ -15,7 +15,7 @@ namespace Cursep.Views
         private User _currentUser;
         private DatabaseService _dbService;
 
-        // Модальные панели
+        // Модальные панели только для редактирования
         private Border _modalOverlay;
         private Border _materialModalBorder;
         private Border _supplierModalBorder;
@@ -34,7 +34,7 @@ namespace Cursep.Views
             dpStartDate.SelectedDate = DateTime.Today.AddDays(-30);
             dpEndDate.SelectedDate = DateTime.Today;
 
-            // Инициализируем модальные панели
+            // Инициализируем модальные панели только для редактирования
             InitializeModalPanels();
         }
 
@@ -251,7 +251,13 @@ namespace Cursep.Views
 
         private void BtnAddMaterial_Click(object sender, RoutedEventArgs e)
         {
-            ShowMaterialEditPanel(null);
+            // Открываем отдельное окно для добавления материала
+            var addMaterialWindow = new AddMaterialWindow();
+            if (addMaterialWindow.ShowDialog() == true)
+            {
+                LoadMaterials();
+                LoadStatistics();
+            }
         }
 
         private void BtnEditMaterial_Click(object sender, RoutedEventArgs e)
@@ -317,8 +323,7 @@ namespace Cursep.Views
 
             stackPanel.Children.Clear();
 
-            bool isEdit = material != null;
-            var titleText = isEdit ? "Редактирование материала" : "Добавление материала";
+            var titleText = "Редактирование материала";
 
             // Заголовок с кнопкой закрытия
             var titlePanel = new StackPanel { Orientation = Orientation.Horizontal };
@@ -356,12 +361,12 @@ namespace Cursep.Views
             // Поля формы
             var txtName = new TextBox
             {
-                Text = material?.MaterialName ?? "",
+                Text = material.MaterialName ?? "",
                 Margin = new Thickness(0, 0, 0, 10)
             };
             var txtDescription = new TextBox
             {
-                Text = material?.Description ?? "",
+                Text = material.Description ?? "",
                 Margin = new Thickness(0, 0, 0, 10),
                 Height = 60,
                 TextWrapping = TextWrapping.Wrap,
@@ -369,22 +374,22 @@ namespace Cursep.Views
             };
             var txtPrice = new TextBox
             {
-                Text = material?.UnitPrice.ToString() ?? "0",
+                Text = material.UnitPrice.ToString(),
                 Margin = new Thickness(0, 0, 0, 10)
             };
             var txtUnit = new TextBox
             {
-                Text = material?.UnitOfMeasure ?? "",
+                Text = material.UnitOfMeasure ?? "",
                 Margin = new Thickness(0, 0, 0, 10)
             };
             var txtMinStock = new TextBox
             {
-                Text = material?.MinStockLevel.ToString() ?? "0",
+                Text = material.MinStockLevel.ToString(),
                 Margin = new Thickness(0, 0, 0, 10)
             };
             var txtMaxStock = new TextBox
             {
-                Text = material?.MaxStockLevel.ToString() ?? "0",
+                Text = material.MaxStockLevel.ToString(),
                 Margin = new Thickness(0, 0, 0, 20)
             };
 
@@ -477,54 +482,29 @@ namespace Cursep.Views
                 {
                     connection.Open();
 
-                    if (material == null)
+                    // Редактирование существующего материала
+                    string query = @"
+                        UPDATE Materials 
+                        SET MaterialName = @MaterialName,
+                            Description = @Description,
+                            UnitPrice = @UnitPrice,
+                            UnitOfMeasure = @UnitOfMeasure,
+                            MinStockLevel = @MinStockLevel,
+                            MaxStockLevel = @MaxStockLevel
+                        WHERE MaterialID = @MaterialID";
+
+                    using (var command = new SqlCommand(query, connection))
                     {
-                        // Добавление нового материала
-                        string query = @"
-                            INSERT INTO Materials (MaterialName, Description, CategoryID, SupplierID, UnitPrice, UnitOfMeasure, MinStockLevel, MaxStockLevel)
-                            VALUES (@MaterialName, @Description, @CategoryID, @SupplierID, @UnitPrice, @UnitOfMeasure, @MinStockLevel, @MaxStockLevel)";
+                        command.Parameters.AddWithValue("@MaterialID", material.MaterialID);
+                        command.Parameters.AddWithValue("@MaterialName", name);
+                        command.Parameters.AddWithValue("@Description", description);
+                        command.Parameters.AddWithValue("@UnitPrice", priceValue);
+                        command.Parameters.AddWithValue("@UnitOfMeasure", unit);
+                        command.Parameters.AddWithValue("@MinStockLevel", minStockValue);
+                        command.Parameters.AddWithValue("@MaxStockLevel", maxStockValue);
 
-                        using (var command = new SqlCommand(query, connection))
-                        {
-                            command.Parameters.AddWithValue("@MaterialName", name);
-                            command.Parameters.AddWithValue("@Description", description);
-                            command.Parameters.AddWithValue("@CategoryID", DBNull.Value);
-                            command.Parameters.AddWithValue("@SupplierID", DBNull.Value);
-                            command.Parameters.AddWithValue("@UnitPrice", priceValue);
-                            command.Parameters.AddWithValue("@UnitOfMeasure", unit);
-                            command.Parameters.AddWithValue("@MinStockLevel", minStockValue);
-                            command.Parameters.AddWithValue("@MaxStockLevel", maxStockValue);
-
-                            command.ExecuteNonQuery();
-                            MessageBox.Show("Материал успешно добавлен");
-                        }
-                    }
-                    else
-                    {
-                        // Редактирование существующего материала
-                        string query = @"
-                            UPDATE Materials 
-                            SET MaterialName = @MaterialName,
-                                Description = @Description,
-                                UnitPrice = @UnitPrice,
-                                UnitOfMeasure = @UnitOfMeasure,
-                                MinStockLevel = @MinStockLevel,
-                                MaxStockLevel = @MaxStockLevel
-                            WHERE MaterialID = @MaterialID";
-
-                        using (var command = new SqlCommand(query, connection))
-                        {
-                            command.Parameters.AddWithValue("@MaterialID", material.MaterialID);
-                            command.Parameters.AddWithValue("@MaterialName", name);
-                            command.Parameters.AddWithValue("@Description", description);
-                            command.Parameters.AddWithValue("@UnitPrice", priceValue);
-                            command.Parameters.AddWithValue("@UnitOfMeasure", unit);
-                            command.Parameters.AddWithValue("@MinStockLevel", minStockValue);
-                            command.Parameters.AddWithValue("@MaxStockLevel", maxStockValue);
-
-                            command.ExecuteNonQuery();
-                            MessageBox.Show("Материал успешно обновлен");
-                        }
+                        command.ExecuteNonQuery();
+                        MessageBox.Show("Материал успешно обновлен");
                     }
 
                     LoadMaterials();
@@ -539,7 +519,6 @@ namespace Cursep.Views
 
         private void BtnDeleteMaterial_Click(object sender, RoutedEventArgs e)
         {
-            // Код удаления материала без изменений
             if (dgMaterials.SelectedItem == null)
             {
                 MessageBox.Show("Выберите материал для удаления");
@@ -550,10 +529,10 @@ namespace Cursep.Views
             if (selectedMaterial != null)
             {
                 var result = MessageBox.Show(
-                    $"Вы уверены, что хотите удалить материал '{selectedMaterial.MaterialName}'?",
+                    $"Вы уверены, что хотите удалить материал '{selectedMaterial.MaterialName}'?\n\nЭто действие также удалит все связанные записи о запасах.",
                     "Подтверждение удаления",
                     MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
+                    MessageBoxImage.Warning);
 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -575,6 +554,14 @@ namespace Cursep.Views
                                     MessageBox.Show("Невозможно удалить материал, так как с ним связаны операции. Сначала удалите все связанные операции.");
                                     return;
                                 }
+                            }
+
+                            // Удаляем записи из Stock
+                            string deleteStockQuery = "DELETE FROM Stock WHERE MaterialID = @MaterialID";
+                            using (var deleteCmd = new SqlCommand(deleteStockQuery, connection))
+                            {
+                                deleteCmd.Parameters.AddWithValue("@MaterialID", selectedMaterial.MaterialID);
+                                deleteCmd.ExecuteNonQuery();
                             }
 
                             // Удаляем материал
@@ -603,7 +590,12 @@ namespace Cursep.Views
 
         private void BtnAddSupplier_Click(object sender, RoutedEventArgs e)
         {
-            ShowSupplierEditPanel(null);
+            // Открываем отдельное окно для добавления поставщика
+            var addSupplierWindow = new AddSupplierWindow();
+            if (addSupplierWindow.ShowDialog() == true)
+            {
+                LoadSuppliers();
+            }
         }
 
         private void BtnEditSupplier_Click(object sender, RoutedEventArgs e)
@@ -626,8 +618,7 @@ namespace Cursep.Views
 
             stackPanel.Children.Clear();
 
-            bool isEdit = supplier != null;
-            var titleText = isEdit ? "Редактирование поставщика" : "Добавление поставщика";
+            var titleText = "Редактирование поставщика";
 
             // Заголовок с кнопкой закрытия
             var titlePanel = new StackPanel { Orientation = Orientation.Horizontal };
@@ -662,13 +653,13 @@ namespace Cursep.Views
             stackPanel.Children.Add(new Separator { Margin = new Thickness(0, 10, 0, 10) });
 
             // Поля формы
-            var txtName = new TextBox { Text = supplier?.SupplierName ?? "", Margin = new Thickness(0, 0, 0, 10) };
-            var txtContact = new TextBox { Text = supplier?.ContactPerson ?? "", Margin = new Thickness(0, 0, 0, 10) };
-            var txtPhone = new TextBox { Text = supplier?.Phone ?? "", Margin = new Thickness(0, 0, 0, 10) };
-            var txtEmail = new TextBox { Text = supplier?.Email ?? "", Margin = new Thickness(0, 0, 0, 10) };
+            var txtName = new TextBox { Text = supplier.SupplierName ?? "", Margin = new Thickness(0, 0, 0, 10) };
+            var txtContact = new TextBox { Text = supplier.ContactPerson ?? "", Margin = new Thickness(0, 0, 0, 10) };
+            var txtPhone = new TextBox { Text = supplier.Phone ?? "", Margin = new Thickness(0, 0, 0, 10) };
+            var txtEmail = new TextBox { Text = supplier.Email ?? "", Margin = new Thickness(0, 0, 0, 10) };
             var txtAddress = new TextBox
             {
-                Text = supplier?.Address ?? "",
+                Text = supplier.Address ?? "",
                 Margin = new Thickness(0, 0, 0, 20),
                 Height = 60,
                 TextWrapping = TextWrapping.Wrap,
@@ -742,49 +733,27 @@ namespace Cursep.Views
                 {
                     connection.Open();
 
-                    if (supplier == null)
+                    // Редактирование существующего поставщика
+                    string query = @"
+                        UPDATE Suppliers 
+                        SET SupplierName = @SupplierName,
+                            ContactPerson = @ContactPerson,
+                            Phone = @Phone,
+                            Email = @Email,
+                            Address = @Address
+                        WHERE SupplierID = @SupplierID";
+
+                    using (var command = new SqlCommand(query, connection))
                     {
-                        // Добавление нового поставщика
-                        string query = @"
-                            INSERT INTO Suppliers (SupplierName, ContactPerson, Phone, Email, Address)
-                            VALUES (@SupplierName, @ContactPerson, @Phone, @Email, @Address)";
+                        command.Parameters.AddWithValue("@SupplierID", supplier.SupplierID);
+                        command.Parameters.AddWithValue("@SupplierName", name);
+                        command.Parameters.AddWithValue("@ContactPerson", contact);
+                        command.Parameters.AddWithValue("@Phone", phone);
+                        command.Parameters.AddWithValue("@Email", email);
+                        command.Parameters.AddWithValue("@Address", address);
 
-                        using (var command = new SqlCommand(query, connection))
-                        {
-                            command.Parameters.AddWithValue("@SupplierName", name);
-                            command.Parameters.AddWithValue("@ContactPerson", contact);
-                            command.Parameters.AddWithValue("@Phone", phone);
-                            command.Parameters.AddWithValue("@Email", email);
-                            command.Parameters.AddWithValue("@Address", address);
-
-                            command.ExecuteNonQuery();
-                            MessageBox.Show("Поставщик успешно добавлен");
-                        }
-                    }
-                    else
-                    {
-                        // Редактирование существующего поставщика
-                        string query = @"
-                            UPDATE Suppliers 
-                            SET SupplierName = @SupplierName,
-                                ContactPerson = @ContactPerson,
-                                Phone = @Phone,
-                                Email = @Email,
-                                Address = @Address
-                            WHERE SupplierID = @SupplierID";
-
-                        using (var command = new SqlCommand(query, connection))
-                        {
-                            command.Parameters.AddWithValue("@SupplierID", supplier.SupplierID);
-                            command.Parameters.AddWithValue("@SupplierName", name);
-                            command.Parameters.AddWithValue("@ContactPerson", contact);
-                            command.Parameters.AddWithValue("@Phone", phone);
-                            command.Parameters.AddWithValue("@Email", email);
-                            command.Parameters.AddWithValue("@Address", address);
-
-                            command.ExecuteNonQuery();
-                            MessageBox.Show("Поставщик успешно обновлен");
-                        }
+                        command.ExecuteNonQuery();
+                        MessageBox.Show("Поставщик успешно обновлен");
                     }
 
                     LoadSuppliers();
@@ -798,7 +767,6 @@ namespace Cursep.Views
 
         private void BtnDeleteSupplier_Click(object sender, RoutedEventArgs e)
         {
-            // Код удаления поставщика без изменений
             if (dgSuppliers.SelectedItem == null)
             {
                 MessageBox.Show("Выберите поставщика для удаления");
@@ -809,10 +777,10 @@ namespace Cursep.Views
             if (selectedSupplier != null)
             {
                 var result = MessageBox.Show(
-                    $"Вы уверены, что хотите удалить поставщика '{selectedSupplier.SupplierName}'?",
+                    $"Вы уверены, что хотите удалить поставщика '{selectedSupplier.SupplierName}'?\n\nУ связанных материалов будет удалена ссылка на этого поставщика.",
                     "Подтверждение удаления",
                     MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
+                    MessageBoxImage.Warning);
 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -822,18 +790,12 @@ namespace Cursep.Views
                         {
                             connection.Open();
 
-                            // Проверяем, есть ли связанные материалы
-                            string checkMaterialsQuery = "SELECT COUNT(*) FROM Materials WHERE SupplierID = @SupplierID";
-                            using (var checkCmd = new SqlCommand(checkMaterialsQuery, connection))
+                            // Обнуляем SupplierID у связанных материалов
+                            string updateMaterialsQuery = "UPDATE Materials SET SupplierID = NULL WHERE SupplierID = @SupplierID";
+                            using (var updateCmd = new SqlCommand(updateMaterialsQuery, connection))
                             {
-                                checkCmd.Parameters.AddWithValue("@SupplierID", selectedSupplier.SupplierID);
-                                int materialsCount = (int)checkCmd.ExecuteScalar();
-
-                                if (materialsCount > 0)
-                                {
-                                    MessageBox.Show("Невозможно удалить поставщика, так как с ним связаны материалы. Сначала удалите или измените поставщика у связанных материалов.");
-                                    return;
-                                }
+                                updateCmd.Parameters.AddWithValue("@SupplierID", selectedSupplier.SupplierID);
+                                updateCmd.ExecuteNonQuery();
                             }
 
                             // Удаляем поставщика
@@ -882,7 +844,6 @@ namespace Cursep.Views
 
         private void BtnGenerateReport_Click(object sender, RoutedEventArgs e)
         {
-            // Код генерации отчета без изменений
             if (dpStartDate.SelectedDate == null || dpEndDate.SelectedDate == null)
             {
                 MessageBox.Show("Выберите период для отчета");
